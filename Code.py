@@ -9,23 +9,23 @@ CITY_DATA = { 'chicago': 'chicago.csv',
 def get_filters():
     print('Hello! Let\'s explore some US bikeshare data!')
     while True:
-        city = input("\nWhich city would you like to filter by? New York City, Chicago or Washington?\n")
-        if city not in ('New York City', 'Chicago', 'Washington'):
+        city = input("\nWhich city would you like to filter by? New York City, Chicago or Washington?\n").lower()
+        if city not in ('new york city', 'chicago', 'washington'):
             print("Sorry, You entered a wrong name. Please try again.")
             continue
         else:
             break 
     # TO DO: get user input for month (all, january, february, ... , june)
     while True:
-        month = input("\nWhich month would you like to filter by? January, February, March, April, May, June or type 'all' if you do not have any preference?\n")
-        if month not in ('January', 'February', 'March', 'April', 'May', 'June', 'all'):
+        month = input("\nWhich month would you like to filter by? January, February, March, April, May, June or type 'all' if you do not have any preference?\n").lower()
+        if month not in ('january', 'february', 'march', 'april', 'may', 'june', 'all'):
             print("Sorry, I didn't catch that. Try again.")
             continue
         else:
             break
     while True:
-        day = input("\nAre you looking for a particular day? If so, kindly enter the day as follows: Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday or type 'all' if you do not have any preference.\n")
-        if day not in ('Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'all'):
+        day = input("\nAre you looking for a particular day? If so, kindly enter the day as follows: Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday or type 'all' if you do not have any preference.\n").lower()
+        if day not in ('sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'all'):
             print("Sorry, I didn't catch that. Try again.")
             continue
         else:
@@ -110,7 +110,7 @@ def station_stats(df):
 
 
     # TO DO: display most frequent combination of start station and end station trip
-    Combination_Station = df.groupby(['Start Station', 'end station']).count()
+    Combination_Station = df.groupby(['Start Station', 'End Station']).count()
     print('\nMost Commonly used combination of start station and end station trip:', start_station, " & ", end_station)
 
 
@@ -142,28 +142,52 @@ def user_stats(df):
     start_time = time.time()
     user_types = df['User Type'].value_counts()
     print('User Types:\n', user_types)
+    try:
+              gender_types = df['Gender'].value_counts()
+              print('\nGender Types:\n', gender_types)
+    except KeyError:
+              print("\nGender Types:\nNo data available for this month.")
     
-    gender_types = df['Gender'].value_counts()
-    print('\nGender Types:\n', gender_types)
     
 
     # TO DO: Display earliest, most recent, and most common year of birth
 
-   
-    earliest_year = df['Birth Year'].min()
-    print('\nEarliest Year:', earliest_year)
+    try:
+        earliest_year = df['Birth Year'].min()
+        print('\nEarliest Year:', earliest_year)
+    except KeyError:
+        print("\nEarliest Year:\nNo data available for this month.")
     
-    most_recent_year = df['Birth Year'].max()
-    print('\nMost Recent Year:', most_recent_year)
-   
+    try:
+        most_recent_year = df['Birth Year'].max()
+        print('\nMost Recent Year:', most_recent_year)
+    except KeyError:
+        print("\nMost Common Year:\nNo data available for this month.")
     
-    most_common_year = df['Birth Year'].value_counts().idxmax()
-    print('\nMost Common Year:', most_common_year)
+    try:
+        most_common_year = df['Birth Year'].value_counts().idxmax()
+        print('\nMost Common Year:', most_common_year)
+    except KeyError:
+        print("\nMost Common Year:\nNo data available for this month.")
     
             
     print("\nThis took %s seconds." % (time.time() - start_time))
     print('-'*40)
 
+    
+def display_data(df):
+    
+    data = 0
+    while True:
+       display = input('Would you like to view next five lines of the raw data? yes or no.')
+       if display == 'no':
+            return
+       elif display == 'yes':
+        data += 5
+        print(df.iloc[data:data+5])
+       else:
+        print('Your input should be either: yes or no.')
+    
 
 def main():
     while True:
@@ -174,6 +198,7 @@ def main():
         station_stats(df)
         trip_duration_stats(df)
         user_stats(df)
+        display_data(df)
 
         restart = input('\nWould you like to restart? Enter yes or no.\n')
         if restart.lower() != 'yes':
@@ -182,3 +207,4 @@ def main():
 
 if __name__ == "__main__":
 	main()
+    
